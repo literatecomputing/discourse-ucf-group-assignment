@@ -1,0 +1,4 @@
+plugins:
+  discourse_group_assign_by_custom_field_enabled:
+    default: true
+    client: true
