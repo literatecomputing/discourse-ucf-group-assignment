@@ -1,6 +1,6 @@
-# discourse-group-assign-by-custom-field
+# ucf-group-assignment
 
-discourse-group-assign-by-custom-field is a plugin for ...
+
 
 ## Installation
 
@@ -9,9 +9,3 @@ how-to from the official Discourse Meta, using `git clone https://github.com/pfa
 as the plugin command.
 
 ## Usage
-
-## Feedback
-
-If you have issues or suggestions for the plugin, please bring them up on
-[Discourse Meta](https://meta.discourse.org).
-# stemway-group-assignment
