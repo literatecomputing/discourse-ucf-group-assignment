@@ -37,8 +37,8 @@ after_initialize do
 
     def self.add_to_group_for_stem_level(user)
       # should be called "set_group_for_stem_level"
-      return unless user
       ucf = UserField.find_by(name: UCF_PRETTY_NAME)
+      return unless ucf
       ucf_name = "user_field_#{ucf.id}"
       stem_level=user.custom_fields[ucf_name]
       stem_group = nil
