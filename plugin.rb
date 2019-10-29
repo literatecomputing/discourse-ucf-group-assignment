@@ -4,7 +4,7 @@
 # about: Assign group per custom user field
 # version: 0.1
 # authors: pfaffman
-# url: https://github.com/pfaffman
+# url: https://www.literatecomputing.com/
 
 #register_asset "stylesheets/common/group-domain.scss"
 
@@ -14,7 +14,12 @@ PLUGIN_NAME = 'DiscourseGroupAssignByCustomField'
 UCF_PRETTY_NAME = 'STEM Level'
 UCF_MAP = { 'High School Student' => 'high_school',
             'Undergraduate Student' => 'undergrad',
-          "Graduate Student or Recent Graduate" => 'Content_Providers'
+            'Graduate Student (Masters)' => 'masters',
+            'Graduate Student (PhD)' => 'phd',
+            'Junior Professional' => 'junior_professionals',
+            'STEM Professional (academia)' => 'stem_academia',
+            'STEM Professional (industry)' => 'stem_industry',
+            'Counselor/ Tutor' => 'counselors_tutors',
           }
 
 load File.expand_path('lib/discourse-group-assign-by-custom-field/engine.rb', __dir__)
@@ -29,23 +34,6 @@ after_initialize do
       engine_name PLUGIN_NAME
       isolate_namespace GroupAssign
     end
-
-    # def self.process_whitelist_for_all_users
-    #   user_ids = []
-    #   if SiteSetting.group_domain_strict
-    #     # process all users
-    #     user_ids = User.human_users.pluck(:id)
-    #   else
-    #     # get just the users likely matching with matching whitelist
-    #     SiteSetting.group_domain_whitelist.split("|").each do |domain|
-    #       user_ids = user_ids + UserEmail.where("email like '%#{domain}'").pluck(:user_id)
-    #     end
-    #   end
-    #   user_ids.each do |uid|
-    #     user = User.find(uid)
-    #     GroupAssign.add_to_group_if_in_whitelisted_domain(user)
-    #   end
-    # end
 
     def self.add_to_group_for_stem_level(user)
       # should be called "set_group_for_stem_level"
