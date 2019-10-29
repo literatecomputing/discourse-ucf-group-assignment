@@ -37,38 +37,26 @@ after_initialize do
 
     def self.add_to_group_for_stem_level(user)
       # should be called "set_group_for_stem_level"
-      puts "\n#{'='*50}\n"
-      puts "add_to_group_for_stem_level"
       ucf = UserField.find_by(name: UCF_PRETTY_NAME)
-      puts "UCF_ID: #{ucf.id} for #{UCF_PRETTY_NAME}"
       ucf_name = "user_field_#{ucf.id}"
-      puts "UCF NAME: #{ucf_name}"
       stem_level=user.custom_fields[ucf_name]
-      puts "Stem: #{stem_level}"
       stem_group = nil
       if stem_level
         stem_group = UCF_MAP[stem_level]
-        puts "FOUND GROUP: #{stem_group}"
         if stem_group
           group = Group.find_by(name: stem_group)
-          puts "group: #{group.id}"
           if group
-            puts "add_to_group_for_stem_level: gid: #{group.id}. User: #{user.id}"
             gu = GroupUser.find_by(group_id: group.id, user_id: user.id)
-            puts "ADDING TO #{stem_group}"
             GroupUser.create(group_id: group.id, user_id: user.id) unless gu
           end
         end
       end
       # remove from all other STEM Groups
       UCF_MAP.values.each do |group_name|
-        puts "DELETE Looking for group name #{group_name} --should not be #{stem_group}"
         next if group_name == stem_group
         group = Group.find_by(name: group_name)
         next unless group
-        puts "DELETE Looking for #{group.id} record"
         gu = GroupUser.find_by(group_id: group.id, user_id: user.id)
-        puts "Destroying from #{group_name}!! " if gu
         gu.destroy if gu
       end
     end
@@ -102,15 +90,11 @@ after_initialize do
   end
 
   self.add_model_callback(UserCustomField, :after_commit, on: :update) do
-      puts "\n#{'='*50}\n"
-      puts "CUSTOM Happening"
       user = User.find(self.user_id)
       GroupAssign.add_to_group_for_stem_level(user)
   end
 
   self.add_model_callback(User, :after_commit, on: :update) do
-      puts "\n#{'='*50}\n"
-      puts "USER Happening"
       user = User.find(self.id)
       GroupAssign.add_to_group_for_stem_level(user)
   end
