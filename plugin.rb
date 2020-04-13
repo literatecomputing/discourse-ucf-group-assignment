@@ -12,14 +12,14 @@ enabled_site_setting :discourse_group_assign_by_custom_field_enabled
 
 PLUGIN_NAME = 'DiscourseGroupAssignByCustomField'
 UCF_PRETTY_NAME = 'STEM Level'
-UCF_MAP = { 'High School Student' => 'high_school',
-            'Undergraduate Student' => 'undergrad',
+UCF_MAP = { 'High School Student' => 'high-schoolers',
+            'Undergraduate Student' => 'undergrads',
             'Graduate Student (Masters)' => 'masters',
-            'Graduate Student (PhD)' => 'phd',
+            'Graduate Student (PhD)' => 'phds',
             'Junior Professional' => 'junior_professionals',
             'STEM Professional (academia)' => 'stem_academia',
-            'STEM Professional (industry)' => 'stem_industry',
-            'Counselor/ Tutor' => 'counselors_tutors',
+            'STEM Professional (industry)' => 'stem_professionals',
+            'Counselor/ Tutor' => 'counselors-tutors'
           }
 
 load File.expand_path('lib/discourse-group-assign-by-custom-field/engine.rb', __dir__)
