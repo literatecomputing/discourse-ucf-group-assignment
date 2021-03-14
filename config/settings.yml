@@ -1,4 +1,14 @@
 plugins:
-  discourse_group_assign_by_custom_field_enabled:
+  user_custom_field_assigns_group_enabled:
     default: true
     client: true
+  user_custom_field_map_name:
+    default: ""
+  user_custom_field_map:
+    type: list
+    client: false
+    list_type: simple
+    default: ""
+  user_custom_group_add_only:
+    default: false
+    type: boolean

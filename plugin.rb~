@@ -10,7 +10,7 @@ register_asset 'stylesheets/common/discourse-group-assign-by-custom-field.scss'
 register_asset 'stylesheets/desktop/discourse-group-assign-by-custom-field.scss'
 register_asset 'stylesheets/mobile/discourse-group-assign-by-custom-field.scss'
 
-enabled_site_setting :discourse_group_assign_by_custom_field_enabled
+enabled_site_setting :user_custom_field_assigns_group_enabled
 
 PLUGIN_NAME ||= 'DiscourseGroupAssignByCustomField'
 

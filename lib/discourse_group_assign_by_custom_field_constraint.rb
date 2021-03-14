@@ -1,5 +1,5 @@
 class DiscourseGroupAssignByCustomFieldConstraint
   def matches?(request)
-    SiteSetting.discourse_group_assign_by_custom_field_enabled
+    SiteSetting.user_custom_field_assigns_group_enabled
   end
 end

@@ -1,103 +1,51 @@
 # frozen_string_literal: true
 
-# name: discourse-group-assign-by-custom-field
-# about: Assign group per custom user field
+# name: user-custom-field-assigns-group
+# about: Assign group according to custom user field value
 # version: 0.1
 # authors: pfaffman
 # url: https://www.literatecomputing.com/
 
 #register_asset "stylesheets/common/group-domain.scss"
 
-enabled_site_setting :discourse_group_assign_by_custom_field_enabled
-
-PLUGIN_NAME = 'DiscourseGroupAssignByCustomField'
-UCF_PRETTY_NAME = 'STEM Level'
-UCF_MAP = { 'High School Student' => 'high-schoolers',
-            'Undergraduate Student' => 'undergrads',
-            'Graduate Student (Masters)' => 'masters',
-            'Graduate Student (PhD)' => 'phds',
-            'Junior Professional' => 'junior_professionals',
-            'STEM Professional (academia)' => 'stem_academia',
-            'STEM Professional (industry)' => 'stem_professionals',
-            'Counselor/ Tutor' => 'counselors-tutors'
-          }
-
-load File.expand_path('lib/discourse-group-assign-by-custom-field/engine.rb', __dir__)
+enabled_site_setting :user_custom_field_assigns_group_enabled
 
 after_initialize do
-  # https://github.com/discourse/discourse/blob/master/lib/plugin/instance.rb
+  add_to_class(:user, :sync_group_membership_to_ucf_map) do
+    return unless SiteSetting.user_custom_field_map_name.present?
+    ucf_value = self.custom_fields[SiteSetting.user_custom_field_map_name]
 
-  # load File.expand_path('app/jobs/group_domain_daily.rb', __dir__)
-
-  module ::GroupAssign
-    class Engine < ::Rails::Engine
-      engine_name PLUGIN_NAME
-      isolate_namespace GroupAssign
+    ucf_map_array = SiteSetting.user_custom_field_map.split("|")
+    ucf_map = {}
+    ucf_map_array.each do |e|
+      key_value = e.split(":")
+      ucf_map[key_value[0]] = key_value[1]
     end
-
-    def self.add_to_group_for_stem_level(user)
-      # should be called "set_group_for_stem_level"
-      ucf = UserField.find_by(name: UCF_PRETTY_NAME)
-      return unless ucf
-      ucf_name = "user_field_#{ucf.id}"
-      stem_level=user.custom_fields[ucf_name]
-      stem_group = nil
-      if stem_level
-        stem_group = UCF_MAP[stem_level]
-        if stem_group
-          group = Group.find_by(name: stem_group)
-          if group
-            gu = GroupUser.find_by(group_id: group.id, user_id: user.id)
-            GroupUser.create(group_id: group.id, user_id: user.id) unless gu
-          end
+    mapped_group = nil
+    if ucf_map.present?
+      mapped_group = ucf_map[ucf_value]
+      if mapped_group
+        group = Group.find_by(name: mapped_group)
+        if group
+          gu = GroupUser.find_by(group_id: group.id, user_id: id)
+          GroupUser.create(group_id: group.id, user_id: id) unless gu
         end
       end
-      # remove from all other STEM Groups
-      UCF_MAP.values.each do |group_name|
-        next if group_name == stem_group
-        group = Group.find_by(name: group_name)
+    end
+    # remove from other mapped groups
+    unless SiteSetting.user_custom_group_add_only
+      ucf_map.values.each do |group_name|
+        next if group_name == mapped_group
+        group = Group.find_by_name(group_name)
         next unless group
-        gu = GroupUser.find_by(group_id: group.id, user_id: user.id)
+        gu = GroupUser.find_by(group_id: group.id, user_id: self.id)
         gu.destroy if gu
       end
     end
-
-    def self.remove_from_other_groups(user)
-    end
-
   end
 
-  require_dependency "application_controller"
-  class GroupAssign::ActionsController < ::ApplicationController
-    requires_plugin PLUGIN_NAME
-
-    before_action :ensure_logged_in
-
-    def list
-      render json: success_json
-    end
-  end
-
-  GroupAssign::Engine.routes.draw do
-    get "/list" => "actions#list"
-  end
-
-  Discourse::Application.routes.append do
-    mount ::GroupAssign::Engine, at: "/group-domain"
-  end
-
-  DiscourseEvent.on(:user_created) do |user|
-    GroupAssign.add_to_group_for_stem_level(user)
-  end
-
-  self.add_model_callback(UserCustomField, :after_commit, on: :update) do
-      user = User.find(self.user_id)
-      GroupAssign.add_to_group_for_stem_level(user)
-  end
-
-  self.add_model_callback(User, :after_commit, on: :update) do
-      user = User.find(self.id)
-      GroupAssign.add_to_group_for_stem_level(user)
+  add_model_callback(User, :after_commit) do
+    self.sync_group_membership_to_ucf_map
   end
 
 end
