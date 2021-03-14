@@ -1,6 +1,4 @@
-# deprecated: See https://github.com/literatecomputing/discourse-ucf-group-assignment
-
-Assign a user to a group according to a custom user field.
+# Assign a user to a group according to a custom user field.
 
 The user field and the value-to-group mapping are configurable in site settings.
 
