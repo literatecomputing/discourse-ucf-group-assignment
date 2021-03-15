@@ -1,5 +1,6 @@
 en:
   site_settings:
     user_custom_field_assigns_group_enabled: "Enable discourse-group-assign-by-custom-field plugin"
-    user_custom_field_name: "Pretty field name for user custom field to watch"
+    user_custom_field_map_name: "Pretty field name for user custom field to watch"
+    user_custom_field_map: "colon separated value to group mapping (e.g., 'value:group-name')"
     user_custom_group_add_only: "Do not remove from other groups when user field updated"
