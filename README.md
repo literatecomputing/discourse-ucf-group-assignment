@@ -2,7 +2,7 @@
 
 The user field and the value-to-group mapping are configurable in site settings.
 
-- `user_custom_field_map_name` is used to indicate which custom field to watch
+- `user_custom_field_map_name` is used to indicate which custom field to watch. This should be the name used in `user_custom_fields` (e.g., `user_field_3`) rather than the "pretty name" used to create the custom field in the admin UX.
 - `user_custom_field_map` maps the custom field value to the group (group must exist). For example, adding these two values:
    - one:group_one
 	 - two:group_two
@@ -18,5 +18,3 @@ See https://www.travis-ci.com/github/literatecomputing/discourse-ucf-group-assig
 Follow [Install a Plugin](https://meta.discourse.org/t/install-a-plugin/19157)
 how-to from the official Discourse Meta, using `git clone https://github.com/pfaffman/discourse-group-assign-by-custom-field.git`
 as the plugin command.
-
-## Usage
